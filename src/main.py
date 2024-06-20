@@ -12,6 +12,10 @@ from db.db import init_db
 API_TOKEN = os.getenv("TOKEN")
 bot = Bot(token=API_TOKEN)
 
+logging.basicConfig(level=logging.DEBUG,
+                    format="%(asctime)s %(levelname)s %(message)s",
+                    datefmt="%H:%M:%S")
+
 
 async def main():
     await init_db()
@@ -23,4 +27,5 @@ async def main():
 
 
 if __name__ == "__main__":
+    logging.info("start bot")
     asyncio.run(main())
