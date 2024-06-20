@@ -1,0 +1,28 @@
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: etc/Dockerfile
+    restart: always
+    env_file: ./.env
+    networks:
+      - main_net
+    volumes:
+      - /home/bob/tg_bots/e-cigarette/image:/image
+  db:
+    image: postgres:15.3-alpine
+    env_file: ./.env
+    environment:
+      TZ: "Asia/Almaty"
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - main_net
+
+networks:
+  main_net:
+    external: True
+volumes:
+    postgres_data:
