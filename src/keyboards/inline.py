@@ -9,3 +9,11 @@ def get_main_menu_k():
     builder.button(text="Помощь", callback_data="help")
     builder.adjust(1)
     return builder.as_markup()
+
+def get_menu_get_rent_k():
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Костюмы", callback_data="test")
+    builder.button(text="Поиск", callback_data="search")
+    builder.button(text="Назад", callback_data="back_main_menu")
+    builder.adjust(1)
+    return builder.as_markup()

@@ -8,6 +8,8 @@ from handlers import main_message
 
 from db.db import init_db
 
+from middleware.session import SessionMiddleware
+
 
 API_TOKEN = os.getenv("TOKEN")
 bot = Bot(token=API_TOKEN)
@@ -21,6 +23,7 @@ async def main():
     await init_db()
 
     dp = Dispatcher()
+    dp.update.middleware(SessionMiddleware())
     dp.include_router(main_message.router)
 
     await dp.start_polling(bot)
