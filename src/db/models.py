@@ -28,7 +28,7 @@ class User(Base):
     last_name: Mapped[str | None]
     username: Mapped[str | None]
     heart: Mapped[int] = mapped_column(default=3)
-    phone: Mapped[str]
+    phone_number: Mapped[str]
 
 class Category(Base):
     """Таблица категорий"""

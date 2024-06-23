@@ -14,6 +14,7 @@ class UserService:
         return user
 
 
-    async def create(self, id, first_name, last_name, username, phone):
-       user = User(id=id, first_name=first_name, last_name=last_name, username=username)
+    async def create(self, id, first_name, last_name, phone_number, username=None):
+       user = User(id=id, first_name=first_name, last_name=last_name, username=username,
+                   phone_number=phone_number)
        self.session.add(user)
