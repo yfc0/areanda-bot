@@ -30,12 +30,16 @@ class User(Base):
     heart: Mapped[int] = mapped_column(default=3)
     phone_number: Mapped[str]
 
+    orders: Mapped[list["Order"]] = relationship()
+
 class Category(Base):
     """Таблица категорий"""
 
     __tablename__ = "category"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
+
+    products: Mapped[list["Product"]] = relationship()
 
 
 class Product(Base):
@@ -45,3 +49,16 @@ class Product(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     status: Mapped[bool]
+
+    category_id: Mapped[int] = mappend_column(ForeignKey("category.id"))
+
+
+class Order(Base):
+    '''Таблица заказа'''
+
+    __tablename__ = "order"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    created: Mapped[datetime] = mapped_column(default=datetime.now())
+    paid: Mapped[bool] = mapped_column(default=False)
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))

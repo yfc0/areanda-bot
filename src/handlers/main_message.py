@@ -22,6 +22,7 @@ from services.user import UserService
 router = Router()
 router.include_router(get_rent_router)
 
+heart = "❤️"
 
 @router.message(Command("start", "menu"))
 async def start(message: Message, session, state: FSMContext):
@@ -32,7 +33,8 @@ async def start(message: Message, session, state: FSMContext):
         await message.answer(text="Пройдите регистрацию")
         await message.answer(text="Отправьте номер телефона", reply_markup=get_contact_k())
         return
-    menu_text= f"Жизни: ❤️❤️💔\nВаш tg id: `{message.from_user.id}`"
+    user_hearts = await UserService(session).count_heart(message.from_user.id)
+    menu_text= f"Жизни: {heart * user_hearts} {user_hearts}/3\nВаш tg id: `{message.from_user.id}`"
     await message.answer(text=menu_text, reply_markup=get_main_menu_k(),
                          parse_mode="MarkDownV2")
 
@@ -46,5 +48,6 @@ async def get_contact_data(message: Message, session, state: FSMContext):
     phone_number = message.contact.phone_number
     await UserService(session).create(id=tg_id, first_name=first_name, last_name=last_name,
                                       phone_number=phone_number)
+    await state.clear()
     await message.answer(text="Вы прошли регистрацию", reply_markup=ReplyKeyboardRemove())
     await start(message, session, state)

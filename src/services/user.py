@@ -18,3 +18,9 @@ class UserService:
        user = User(id=id, first_name=first_name, last_name=last_name, username=username,
                    phone_number=phone_number)
        self.session.add(user)
+
+
+    async def count_heart(self, id):
+        query = select(User.heart).where(User.id == id)
+        hearts = await self.session.scalar(query)
+        return hearts
