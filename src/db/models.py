@@ -29,6 +29,7 @@ class User(Base):
     username: Mapped[str | None]
     heart: Mapped[int] = mapped_column(default=3)
     phone_number: Mapped[str]
+    role: Mapped[str] = mapped_column(default="user")
 
     orders: Mapped[list["Order"]] = relationship()
 
@@ -50,7 +51,7 @@ class Product(Base):
     name: Mapped[str]
     status: Mapped[bool]
 
-    category_id: Mapped[int] = mappend_column(ForeignKey("category.id"))
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
 
 
 class Order(Base):

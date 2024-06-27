@@ -10,10 +10,18 @@ def get_main_menu_k():
     builder.adjust(1)
     return builder.as_markup()
 
+
 def get_menu_get_rent_k():
     builder = InlineKeyboardBuilder()
     builder.button(text="Костюмы", callback_data="test")
     builder.button(text="Поиск", callback_data="search")
     builder.button(text="Назад", callback_data="back_main_menu")
     builder.adjust(1)
+    return builder.as_markup()
+
+def get_admin_menu_k():
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Создать категорию", callback_data="create_category")
+    builder.button(text="Удалить категорию", callback_data="del_category")
+    builder.adjust(2)
     return builder.as_markup()

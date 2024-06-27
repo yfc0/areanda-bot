@@ -5,6 +5,7 @@ import logging
 from aiogram import Bot, Dispatcher
 
 from handlers import main_message
+from handlers import admin_message
 
 from db.db import init_db
 
@@ -25,6 +26,7 @@ async def main():
     dp = Dispatcher()
     dp.update.middleware(SessionMiddleware())
     dp.include_router(main_message.router)
+    dp.include_router(admin_message.router)
 
     await dp.start_polling(bot)
 
