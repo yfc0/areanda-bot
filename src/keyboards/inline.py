@@ -19,9 +19,30 @@ def get_menu_get_rent_k():
     builder.adjust(1)
     return builder.as_markup()
 
-def get_admin_menu_k():
+
+def get_categories_menu_am_k():
     builder = InlineKeyboardBuilder()
     builder.button(text="Создать категорию", callback_data="create_category")
     builder.button(text="Удалить категорию", callback_data="del_category")
+    builder.button(text="Назад", callback_data="back")
+    builder.adjust(2)
+    return builder.as_markup()
+
+def get_admin_menu_k():
+    builder = InlineKeyboardBuilder()
+
+   # am in callback data this admin menu
+    builder.button(text="Категории", callback_data="categories_am")
+    builder.button(text="Товары", callback_data="products_am")
+    builder.button(text="Аренда", callback_data="rent_am")
+    builder.button(text="Пользователи", callback_data="users_am")
+    builder.adjust(1)
+    return builder.as_markup()
+
+
+def get_accept_cancel_k():
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Принять", callback_data="accept")
+    builder.button(text="Отменить", callback_data="cancel")
     builder.adjust(2)
     return builder.as_markup()

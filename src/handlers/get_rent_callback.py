@@ -6,10 +6,7 @@ from keyboards.inline import get_menu_get_rent_k
 
 import logging
 
-from .back_callback import router as back_callback_router
-
 router = Router()
-router.include_router(back_callback_router)
 
 @router.callback_query(F.data == "get_rent")
 async def get_rent(callback: CallbackQuery):

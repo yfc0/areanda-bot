@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import F
 from aiogram.types import Message
 from aiogram.types.reply_keyboard_remove import ReplyKeyboardRemove
 from aiogram.filters.command import Command
@@ -13,30 +13,35 @@ from keyboards.reply import get_contact_k
 
 from states.states import Registration
 
-from .get_rent_callback import router as get_rent_router
-
 from services import auth
 from services.user import UserService
-
+from aiogram import Router
 
 router = Router()
-router.include_router(get_rent_router)
+
 
 heart = "❤️"
 
+
+async def main_menu(message: Message, session, state: FSMContext, user_id):
+    user_hearts = await UserService(session).count_heart(user_id)
+    menu_text= f"Жизни: {heart * user_hearts} {user_hearts}/3\nВаш tg id: `{user_id}`"
+    await message.answer(text=menu_text, reply_markup=get_main_menu_k(),
+                         parse_mode="MarkDownV2")
+
+
 @router.message(Command("start", "menu"))
 async def start(message: Message, session, state: FSMContext):
-    '''Главное меню'''
+    '''Регистрация и главное меню'''
+
     logging.info("handler start")
-    if not await auth.check(session, message.from_user.id):
+    user_id = message.from_user.id
+    if not await auth.check(session, user_id):
         await state.set_state(Registration.contact_data)
         await message.answer(text="Пройдите регистрацию")
         await message.answer(text="Отправьте номер телефона", reply_markup=get_contact_k())
         return
-    user_hearts = await UserService(session).count_heart(message.from_user.id)
-    menu_text= f"Жизни: {heart * user_hearts} {user_hearts}/3\nВаш tg id: `{message.from_user.id}`"
-    await message.answer(text=menu_text, reply_markup=get_main_menu_k(),
-                         parse_mode="MarkDownV2")
+    await main_menu(message, session, state, user_id)
 
 
 @router.message(F.contact, StateFilter(Registration.contact_data))
