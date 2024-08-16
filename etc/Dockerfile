@@ -8,6 +8,8 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH "${PYTONPATH}:/usr/src"
 ENV TZ="Asya/Almaty"
 
+COPY ./etc/logging_config.ini /etc/logging_config.ini
+
 COPY ./requirements.txt ./
 
 RUN pip install --upgrade pip

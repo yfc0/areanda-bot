@@ -17,6 +17,9 @@ from services.admin import AdminService
 
 from filters.int_filter import IntFilter
 
+
+logger = logging.getLogger(__name__)
+
 router = Router()
 
 
@@ -51,20 +54,16 @@ v
 @router.message(Command("admin"))
 async def admin_menu(message: Message, session, state: FSMContext):
     '''Админ меню'''
-    logging.info("handler admin menu")
+
+    logger.info(f"user: {message.from_user.id} state: {await state.get_state()}")
     await _admin_menu(message, session, state)
-
-
-@router.message(Command("state"))
-async def current_state(message: Message, state: FSMContext):
-    await message.answer(text=f"STATE: {await state.get_state()}\n\nDATA: {await state.get_data()}")
 
 
 @router.message(F.text, StateFilter(AdminMenu.category_name))
 async def get_category_name(message: Message, state: FSMContext):
     '''Получить имя категории'''
 
-    logging.info("handler get name")
+    logger.info(f"user: {message.from_user.id} state: {await state.get_state()}")
     await state.update_data(name=message.text)
     await message.answer(text=f"Вы ввели {message.text}\nЧтобы сменить название введите его повторно",
                                    reply_markup=get_accept_cancel_k())
@@ -74,7 +73,7 @@ async def get_category_name(message: Message, state: FSMContext):
 async def get_category_id(message: Message, state: FSMContext):
     '''Получить id категории'''
 
-    logging.info("handler get category id")
+    logger.info(f"user: {message.from_user.id} state: {await state.get_state()}")
     category_id = int(message.text)
     await state.update_data(category=category_id)
     await message.answer(text=f"Вы ввели {message.text}\nЧтобы сменить id введите его повторно",
@@ -85,7 +84,7 @@ async def get_category_id(message: Message, state: FSMContext):
 async def get_product_id(message: Message, state: FSMContext):
     '''Получить id товара'''
 
-    logging.info("handler get product id")
+    logger.info(f"user: {message.from_user.id} state: {await state.get_state()}")
     product_id = int(message.text)
     await state.update_data(product=product_id)
     await message.answer(text=f"Вы ввели {message.text}\nЧтобы сменить id введите его повторно",
@@ -96,7 +95,7 @@ async def get_product_id(message: Message, state: FSMContext):
 async def get_product_name(message: Message, state: FSMContext):
     '''Получить имя товара'''
 
-    logging.info("handler get_product name")
+    logger.info(f"user: {message.from_user.id} state: {await state.get_state()}")
     await state.update_data(product_name=message.text)
     await message.answer(text=f"Вы ввели {message.text}\nЧтобы сменить имя введите его повторно",
                          reply_markup=get_accept_cancel_k())
@@ -106,7 +105,7 @@ async def get_product_name(message: Message, state: FSMContext):
 async def get_product_description(message: Message, state: FSMContext):
     '''Получить описание товара'''
 
-    logging.info("handler get product description")
+    logger.info(f"user: {message.from_user.id} state: {await state.get_state()}")
     await state.update_data(product_description=message.text)
     await message.answer(text=f"Вы ввели {message.text}\nЧтобы сменить имя введите его повторно",
                          reply_markup=get_accept_cancel_k())
@@ -116,7 +115,7 @@ async def get_product_description(message: Message, state: FSMContext):
 async def get_product_photo(message: Message, state: FSMContext):
     '''Получить фото товара'''
 
-    logging.info("handler get product photo")
+    logger.info(f"user: {message.from_user.id} state: {await state.get_state()}")
     photo = message.photo[0].file_id
     await state.update_data(photo=photo)
     await message.answer_photo(caption="Чтобы сменить фото отправьте его повторно", photo=photo,

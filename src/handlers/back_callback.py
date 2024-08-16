@@ -9,10 +9,12 @@ from .main_message import main_menu
 
 import logging
 
+logger = logging.getLogger(__name__)
+
 router = Router()
 
 @router.callback_query(F.data == "back_main_menu")
 async def back_main_menu(callback: CallbackQuery, session, state: FSMContext):
-    logging.info("handler back main menu")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await callback.message.delete()
     await main_menu(callback.message, session, state, callback.from_user.id)

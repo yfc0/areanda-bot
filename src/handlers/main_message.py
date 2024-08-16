@@ -17,6 +17,8 @@ from services import auth
 from services.user import UserService
 from aiogram import Router
 
+logger = logging.getLogger(__name__)
+
 router = Router()
 
 
@@ -34,7 +36,7 @@ async def main_menu(message: Message, session, state: FSMContext, user_id):
 async def start(message: Message, session, state: FSMContext):
     '''Регистрация и главное меню'''
 
-    logging.info("handler start")
+    logger.info(f"user: {message.from_user.id} state: {await state.get_state()}")
     user_id = message.from_user.id
     if not await auth.check(session, user_id):
         await state.set_state(Registration.contact_data)
@@ -47,6 +49,8 @@ async def start(message: Message, session, state: FSMContext):
 @router.message(F.contact, StateFilter(Registration.contact_data))
 async def get_contact_data(message: Message, session, state: FSMContext):
     '''Получить контактные данные'''
+
+    logger.info(f"user: {message.from_user.id} state: {await state.get_state()}")
     tg_id = message.contact.user_id
     first_name = message.contact.first_name
     last_name = message.contact.last_name

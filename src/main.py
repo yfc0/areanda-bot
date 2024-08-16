@@ -1,6 +1,7 @@
 import os
 import asyncio
 import logging
+from logging.config import fileConfig
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
@@ -14,13 +15,16 @@ from redis.asyncio.client import Redis
 
 from middleware.session import SessionMiddleware
 
+from utils.logging import Logger
+
+
+Logger.setup()
+fileConfig("/etc/logging_config.ini", disable_existing_loggers=False)
+logger = logging.getLogger(__name__)
+
 
 API_TOKEN = os.getenv("TOKEN")
 bot = Bot(token=API_TOKEN)
-
-logging.basicConfig(level=logging.DEBUG,
-                    format="%(asctime)s %(levelname)s %(message)s",
-                    datefmt="%H:%M:%S")
 
 
 async def main():
@@ -37,5 +41,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    logging.info("start bot")
+    logger.info("start bot")
     asyncio.run(main())

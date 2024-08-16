@@ -11,8 +11,8 @@ from sqlalchemy.orm import (
 )
 from datetime import datetime
 
-
 int_64 = Annotated[BigInteger, "int_64"]
+
 
 class Base(DeclarativeBase):
     registry = registry(type_annotation_map={int_64: BigInteger()})
@@ -32,6 +32,7 @@ class User(Base):
     role: Mapped[str] = mapped_column(default="user")
 
     orders: Mapped[list["Order"]] = relationship()
+
 
 class Category(Base):
     """Таблица категорий"""
@@ -55,6 +56,7 @@ class Product(Base):
     photo: Mapped[str]
     status: Mapped[str] = mapped_column(default="neutral")
 
+    owner_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
 
 
@@ -62,9 +64,23 @@ class Order(Base):
     '''Таблица заказа'''
 
     __tablename__ = "order"
+    __table_args__ = (CheckConstraint("type_ in ('rent', 'rent_out')"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     created: Mapped[datetime] = mapped_column(default=datetime.now())
+    end_rent: Mapped[datetime]
     paid: Mapped[bool | None] = mapped_column(default=False)
+    type_: Mapped[str]
 
+    order_items: Mapped[List["OrderItem"]] = relationship(lazy='selectin')
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+
+
+class OrderItem(Base):
+    '''Товары для заказа'''
+
+    __tablename__ = "order_item"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("order.id"))
+    product_id: Mapped[int] = mapped_column(ForeignKey("product.id"))

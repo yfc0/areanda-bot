@@ -61,11 +61,11 @@ class AdminService:
         await self.session.delete(category)
 
 
-    async def save_product(self, name, description, photo, category_id):
+    async def save_product(self, name, description, photo, category_id, owner_id):
         '''Сохранить товар'''
 
         product = Product(name=name, description=description, photo=photo,
-                          category_id=category_id)
+                          category_id=category_id, owner_id=owner_id)
         self.session.add(product)
 
 

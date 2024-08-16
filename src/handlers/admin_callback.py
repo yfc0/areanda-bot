@@ -18,6 +18,8 @@ import logging
 
 from .admin_message import _admin_menu
 
+logger = logging.getLogger(__name__)
+
 router = Router()
 
 
@@ -34,7 +36,7 @@ async def _categories_menu(callback: CallbackQuery, session, state: FSMContext):
 async def categories_menu(callback: CallbackQuery, session, state: FSMContext):
     '''Меню раздела категории'''
 
-    logging.info(f"handler categories menu")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await _categories_menu(callback, session, state)
 
 
@@ -42,7 +44,7 @@ async def categories_menu(callback: CallbackQuery, session, state: FSMContext):
 async def paginate_category(callback: CallbackQuery, state: FSMContext, session):
     '''Пагинация категорий'''
 
-    logging.info("handler category menu next page")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     data = await state.get_data()
     paginator = Paginator(**data['paginator'])
     if callback.data == "back_page":
@@ -59,7 +61,7 @@ async def paginate_category(callback: CallbackQuery, state: FSMContext, session)
 async def create_category(callback: CallbackQuery, state: FSMContext):
     '''Создание категории'''
 
-    logging.info("handler callback create category")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await callback.message.delete()
     await state.set_state(AdminMenu.category_name)
     await callback.message.answer(text="Введите название категории")
@@ -69,7 +71,7 @@ async def create_category(callback: CallbackQuery, state: FSMContext):
 async def del_category(callback: CallbackQuery, state: FSMContext):
     '''Удаление категории'''
 
-    logging.info("handler del category")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await callback.message.delete()
     await state.set_state(AdminMenu.del_category)
     await callback.message.answer(text="Введите id категории, чтобы удалить ее.")
@@ -79,7 +81,7 @@ async def del_category(callback: CallbackQuery, state: FSMContext):
 async def accept_del_category(callback: CallbackQuery, session, state: FSMContext):
     '''Удалить категорию'''
 
-    logging.info("handler accept_del")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     data = await state.get_data()
     await AdminService(session).delete_category(id=data["category"])
     await state.clear()
@@ -89,7 +91,8 @@ async def accept_del_category(callback: CallbackQuery, session, state: FSMContex
 @router.callback_query(F.data == "accept", StateFilter(AdminMenu.category_name))
 async def save_category(callback: CallbackQuery, session, state: FSMContext):
     '''Сохранить категорию'''
-    logging.info("handler save category")
+
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     data = await state.get_data()
     await AdminService(session).save_category(name=data["name"])
     await state.clear()
@@ -111,7 +114,7 @@ async def _products_menu(callback: CallbackQuery, session, state: FSMContext, wi
 async def products_menu(callback: CallbackQuery, session, state: FSMContext):
     '''Меню раздела товары'''
 
-    logging.info("handler products menu")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await _products_menu(callback, session, state)
 
 
@@ -119,7 +122,7 @@ async def products_menu(callback: CallbackQuery, session, state: FSMContext):
 async def create_product(callback: CallbackQuery, session, state: FSMContext):
     '''Создание продукта'''
 
-    logging.info("handler create product")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await state.set_state(CreateProduct.name)
     await callback.message.edit_text(text="Введите имя товара")
 
@@ -128,7 +131,7 @@ async def create_product(callback: CallbackQuery, session, state: FSMContext):
 async def accept_product_name(callback: CallbackQuery, session, state: FSMContext):
     '''Принять название товара'''
 
-    logging.info("handler accept product name")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await state.set_state(CreateProduct.description)
     await callback.message.edit_text(text="Введите описание товара")
 
@@ -137,7 +140,7 @@ async def accept_product_name(callback: CallbackQuery, session, state: FSMContex
 async def accept_product_description(callback: CallbackQuery, session, state: FSMContext):
     '''Принять описание товара'''
 
-    logging.info("handler accept product descripion")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await state.set_state(CreateProduct.photo)
     await callback.message.edit_text(text="Отправьте фото товара")
 
@@ -146,7 +149,7 @@ async def accept_product_description(callback: CallbackQuery, session, state: FS
 async def accept_product_photo(callback: CallbackQuery, session, state: FSMContext):
     '''Принять фото товара'''
 
-    logging.info("handler accept product photo")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await state.set_state(CreateProduct.category)
     ids_list = await AdminService(session).ids_list_category()
     paginator = Paginator(ids_list, 5)
@@ -161,7 +164,7 @@ async def accept_product_photo(callback: CallbackQuery, session, state: FSMConte
 async def paginate_category_list(callback: CallbackQuery, session, state: FSMContext):
     '''Пагинация категорий'''
 
-    logging.info("handler category menu next page")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     data = await state.get_data()
     paginator = Paginator(**data['paginator'])
     if callback.data == "back_page_cl":
@@ -186,7 +189,7 @@ async def paginate_category_list(callback: CallbackQuery, session, state: FSMCon
 async def get_product_category(callback: CallbackQuery, session, state: FSMContext):
     '''Получить категорию товара'''
 
-    logging.info("handler get product category")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     data = await state.get_data()
     paginator = Paginator(**data['paginator'])
     category_id = int(callback.data.split("category_id_")[1])
@@ -201,7 +204,7 @@ async def get_product_category(callback: CallbackQuery, session, state: FSMConte
 async def accept_product_category(callback: CallbackQuery, session, state: FSMContext):
     '''Принять категорию для товара'''
 
-    logging.info("handler accept product category")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await state.set_state(CreateProduct.end)
     data = await state.get_data()
     category = await AdminService(session).category_name(data['product_category'])
@@ -214,10 +217,10 @@ async def accept_product_category(callback: CallbackQuery, session, state: FSMCo
 async def end_create_product(callback: CallbackQuery, session, state: FSMContext):
     '''Закончить создание товара'''
 
-    logging.info("handler end create product")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     data = await state.get_data()
     await AdminService(session).save_product(data['product_name'], data['product_description'],
-                                             data['photo'], data['product_category'])
+                                             data['photo'], data['product_category'], callback.from_user.id)
     await _products_menu(callback, session, state, True)
 
 
@@ -225,7 +228,7 @@ async def end_create_product(callback: CallbackQuery, session, state: FSMContext
 async def del_product(callback: CallbackQuery, session, state: FSMContext):
     '''Удаление товара'''
 
-    logging.info("handler del product")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await state.set_state(AdminMenu.del_product)
     await callback.message.edit_text(text="Введите id товара, чтобы удалить ее.")
 
@@ -234,7 +237,7 @@ async def del_product(callback: CallbackQuery, session, state: FSMContext):
 async def accept_del_product(callback: CallbackQuery, session, state: FSMContext):
     '''Удалить категорию'''
 
-    logging.info("handler accept_del")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     data = await state.get_data()
     await AdminService(session).delete_product(id=data["product"])
     await state.clear()
@@ -244,5 +247,5 @@ async def accept_del_product(callback: CallbackQuery, session, state: FSMContext
 @router.callback_query(F.data == "back")
 async def back_menu(callback: CallbackQuery, session, state: FSMContext):
 
-    logging.info("handler back menu")
+    logger.info(f"user: {callback.from_user.id} state: {await state.get_state()}")
     await _admin_menu(callback.message, session, state, True)

@@ -2,3 +2,4 @@ aiogram==3.8.0
 sqlalchemy[asyncio]
 asyncpg
 redis
+python-json-logger==2.0.7
