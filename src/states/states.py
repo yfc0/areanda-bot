@@ -9,3 +9,12 @@ class Registration(StatesGroup):
 class AdminMenu(StatesGroup):
     category_name = State()
     del_category = State()
+    del_product = State()
+
+
+class CreateProduct(StatesGroup):
+    name = State()
+    description = State()
+    photo = State()
+    category = State()
+    end = State()

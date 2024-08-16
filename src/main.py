@@ -3,11 +3,14 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.redis import RedisStorage
 
 from handlers.user_router import user_router
 from handlers.admin_router import admin_router
 
 from db.db import init_db
+
+from redis.asyncio.client import Redis
 
 from middleware.session import SessionMiddleware
 
@@ -23,7 +26,9 @@ logging.basicConfig(level=logging.DEBUG,
 async def main():
     await init_db()
 
-    dp = Dispatcher()
+    storage = RedisStorage.from_url(os.getenv("REDIS_URL"))
+
+    dp = Dispatcher(storage=storage)
     dp.update.middleware(SessionMiddleware())
     dp.include_router(admin_router)
     dp.include_router(user_router)

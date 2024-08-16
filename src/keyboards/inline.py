@@ -20,10 +20,39 @@ def get_menu_get_rent_k():
     return builder.as_markup()
 
 
-def get_categories_menu_am_k():
+def get_categories_menu_am_k(paginator):
     builder = InlineKeyboardBuilder()
+    builder.button(text="⬅️", callback_data="back_page")
+    builder.button(text=f"{paginator.page_number}/{paginator.number_pages}", callback_data="none")
+    builder.button(text="➡️", callback_data="next_page")
     builder.button(text="Создать категорию", callback_data="create_category")
     builder.button(text="Удалить категорию", callback_data="del_category")
+    builder.button(text="Назад", callback_data="back")
+    builder.adjust(3, 2, 1)
+    return builder.as_markup()
+
+
+def get_categories_list_am_k(paginator, categories, accept_cancel=False):
+    builder = InlineKeyboardBuilder()
+    if accept_cancel:
+        builder.button(text="Принять", callback_data="accept")
+        builder.button(text="Отменить", callback_data="cancel")
+    builder.button(text="⬅️", callback_data="back_page_cl")
+    builder.button(text=f"{paginator.page_number}/{paginator.number_pages}", callback_data="none")
+    builder.button(text="➡️", callback_data="next_page_cl")
+    for category in categories:
+        builder.button(text=f"{category.name}", callback_data=f"category_id_{category.id}")
+    if accept_cancel:
+        builder.adjust(2, 3, 1)
+    else:
+        builder.adjust(3, 1)
+    return builder.as_markup()
+
+
+def get_products_menu_am_k():
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Добавить товар", callback_data="create_product")
+    builder.button(text="Удалить товар", callback_data="del_product")
     builder.button(text="Назад", callback_data="back")
     builder.adjust(2)
     return builder.as_markup()

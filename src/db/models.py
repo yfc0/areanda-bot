@@ -47,9 +47,13 @@ class Product(Base):
     """Таблица товара"""
 
     __tablename__ = "product"
+    __table_args__ = (CheckConstraint("status in ('neutral', 'rented')"),)
+
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
-    status: Mapped[bool]
+    description: Mapped[str]
+    photo: Mapped[str]
+    status: Mapped[str] = mapped_column(default="neutral")
 
     category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
 
@@ -58,8 +62,9 @@ class Order(Base):
     '''Таблица заказа'''
 
     __tablename__ = "order"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     created: Mapped[datetime] = mapped_column(default=datetime.now())
-    paid: Mapped[bool] = mapped_column(default=False)
+    paid: Mapped[bool | None] = mapped_column(default=False)
 
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))

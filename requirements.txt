@@ -1,3 +1,4 @@
 aiogram==3.8.0
 sqlalchemy[asyncio]
 asyncpg
+redis
