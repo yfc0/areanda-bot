@@ -77,9 +77,18 @@ class AdminService:
         await self.session.delete(product)
 
 
-    async def products_list(self):
+    async def products_ids_list_category(self, category_id):
+        '''Список товара по категории'''
+
+        query = select(Product.id).where(Product.category_id == category_id)
+        products = await self.session.execute(query)
+        return products.scalars().all()
+
+
+    async def products_list_text(self):
         '''Список товара по id, name, status'''
-        products = await self._products_list()
+
+        products = await self.products_list()
         if not products:
             return "нет созданных товаров"
         products_list = ""
@@ -88,8 +97,16 @@ class AdminService:
         return products_list
 
 
-    async def _products_list(self):
+    async def products_list(self):
         '''Все товары'''
         query = select(Product)
         products = await self.session.execute(query)
         return products.scalars().all()
+
+
+    async def get_product(self, product_id):
+        '''Получить товар'''
+
+        query = select(Product).where(Product.id == product_id)
+        product = await self.session.scalar(query)
+        return product

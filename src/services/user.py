@@ -25,6 +25,7 @@ class UserService:
         hearts = await self.session.scalar(query)
         return hearts
 
+
     async def check_role(self, id):
         query = select(User.role).where(User.id == id)
         role = await self.session.scalar(query)

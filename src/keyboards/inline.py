@@ -1,5 +1,7 @@
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.types.inline_keyboard_button import InlineKeyboardButton
+
 
 def get_main_menu_k():
     builder = InlineKeyboardBuilder()
@@ -32,6 +34,11 @@ def get_categories_menu_am_k(paginator):
     return builder.as_markup()
 
 
+def add_main_menu_b(keyboard):
+    keyboard.inline_keyboard.append([InlineKeyboardButton(text="В главное меню", callback_data="back_main_menu")])
+    return keyboard
+
+
 def get_categories_list_am_k(paginator, categories, accept_cancel=False):
     builder = InlineKeyboardBuilder()
     if accept_cancel:
@@ -57,10 +64,22 @@ def get_products_menu_am_k():
     builder.adjust(2)
     return builder.as_markup()
 
+
+def get_products_with_basket(paginator, basket):
+    builder = InlineKeyboardBuilder()
+    product_id = paginator.current_page[0]
+    builder.button(text="⬅️", callback_data="back_page_pb")
+    builder.button(text=f"{paginator.page_number}/{paginator.number_pages}", callback_data="none")
+    builder.button(text="➡️", callback_data="next_page_pb")
+    builder.button(text=f"В списке {'✅' if basket.check_product(*paginator.current_page) else '❌'}",
+                   callback_data=f"in_basket_{product_id}")
+    builder.button(text=f"В корзине: {len(basket.items)}", callback_data="none")
+    builder.adjust(3, 1)
+    return builder.as_markup()
+
+
 def get_admin_menu_k():
     builder = InlineKeyboardBuilder()
-
-   # am in callback data this admin menu
     builder.button(text="Категории", callback_data="categories_am")
     builder.button(text="Товары", callback_data="products_am")
     builder.button(text="Аренда", callback_data="rent_am")

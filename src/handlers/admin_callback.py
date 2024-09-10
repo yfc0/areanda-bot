@@ -100,7 +100,7 @@ async def save_category(callback: CallbackQuery, session, state: FSMContext):
 
 
 async def _products_menu(callback: CallbackQuery, session, state: FSMContext, with_image=False):
-    products = await AdminService(session).products_list()
+    products = await AdminService(session).products_list_text()
     if with_image:
         await callback.message.delete()
         await callback.message.answer(text=f"{products}",

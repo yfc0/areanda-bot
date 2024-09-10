@@ -12,6 +12,12 @@ class AdminMenu(StatesGroup):
     del_product = State()
 
 
+class Rent(StatesGroup):
+    category = State()
+    products = State()
+    data = State()
+
+
 class CreateProduct(StatesGroup):
     name = State()
     description = State()

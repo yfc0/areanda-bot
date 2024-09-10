@@ -37,6 +37,7 @@ async def start(message: Message, session, state: FSMContext):
     '''Регистрация и главное меню'''
 
     logger.info(f"user: {message.from_user.id} state: {await state.get_state()}")
+    await state.clear()
     user_id = message.from_user.id
     if not await auth.check(session, user_id):
         await state.set_state(Registration.contact_data)
